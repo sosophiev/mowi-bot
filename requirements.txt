@@ -3,5 +3,4 @@ gunicorn
 pandas
 slack
 slackeventsapi
-dotenv
 pathlib
