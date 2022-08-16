@@ -11,9 +11,7 @@ import pandas as pd
 weekmood = pd.read_csv('weekmood.csv')
 count = pd.read_csv('count.csv')
 print(count)
-index = count.iat[0, 0]
-if count.iat[0, 0] == len(weekmood) - 1:
-    count.iat[0, 0] = 0
+
 
 load_dotenv()
 
@@ -51,8 +49,6 @@ def marche():
     client.chat_postMessage(channel= channel_id, 
     text= f"{user_name.capitalize()} a envie d'aller marcher ! Qui est partant.e pour l'accompagner ? "
     )
-    count += 1   
-    count.to_csv("count.csv", index=False)
     return Response(), 200
 
 @app.route('/weekmood', methods = ['POST'])
@@ -60,10 +56,16 @@ def week_mood():
     data = request.form
     user_id = data.get('user_id')
     channel_id = data.get('channel_id')
+    index = count.iat[0, 0]
+    if count.iat[0, 0] >= len(weekmood) - 1:
+        count.iat[0, 0] = 0
+    else: 
+        count.iat[0, 0]+= 1   
+    count.to_csv("count.csv", index=False)
     client.chat_postMessage(channel= channel_id, 
     text= "Hello l'équipe :heart:" + 
         '\n\n' + 
-        "_Vous trouverez ci-dessous l'organisation de nos points de demain matin :_"
+        "_Vous trouverez ci-dessous l'organisation de notre point de jeudi matin :_"
         '\n\n' +
         "---------- Pour notre Week-mood : ----------" +"\n\n" +
         f"*{weekmood.at[index, 'Nom']} *" +
